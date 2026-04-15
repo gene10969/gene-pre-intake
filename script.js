@@ -1,175 +1,195 @@
-const STORAGE_KEY = 'gene_pre_intake_form_v2';
-const LINE_SHARE_URL = 'https://line.me/R/msg/text/?';
-
+const STORAGE_KEY = 'gene_pre_intake_v1';
+const steps = Array.from(document.querySelectorAll('.step'));
 const form = document.getElementById('intakeForm');
-const steps = Array.from(document.querySelectorAll('.form-step'));
-const currentStepEl = document.getElementById('currentStep');
-const stepTitleEl = document.getElementById('stepTitle');
-const progressFill = document.getElementById('progressFill');
 const prevBtn = document.getElementById('prevBtn');
 const nextBtn = document.getElementById('nextBtn');
-const submitWrap = document.getElementById('submitWrap');
-const saveStatus = document.getElementById('saveStatus');
-const hospitalFields = document.getElementById('hospitalFields');
-const medicationFields = document.getElementById('medicationFields');
-const clearBtn = document.getElementById('clearBtn');
-const resultCard = document.getElementById('resultCard');
-const resultBody = document.getElementById('resultBody');
+const submitBtn = document.getElementById('submitBtn');
+const summarySection = document.getElementById('summarySection');
+const summaryContent = document.getElementById('summaryContent');
 const editBtn = document.getElementById('editBtn');
 const copyBtn = document.getElementById('copyBtn');
 const lineShareBtn = document.getElementById('lineShareBtn');
+const hospitalFields = document.getElementById('hospitalFields');
+const medicineDetailsWrap = document.getElementById('medicineDetailsWrap');
+const currentStepText = document.getElementById('currentStepText');
+const currentStepLabel = document.getElementById('currentStepLabel');
+const progressBar = document.getElementById('progressBar');
+let currentStep = 0;
 
-let currentStep = 1;
-
-function updateConditionalAreas() {
-  const visit = form.querySelector('input[name="hospitalVisit"]:checked')?.value;
-  const medication = form.querySelector('input[name="medication"]:checked')?.value;
-  hospitalFields.classList.toggle('hidden', visit !== 'はい');
-  medicationFields.classList.toggle('hidden', medication !== 'あり');
+function saveFormState() {
+  const data = getFormData();
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
 }
 
-function setSaveStatus(message) {
-  saveStatus.textContent = message;
-  window.clearTimeout(setSaveStatus.timer);
-  setSaveStatus.timer = window.setTimeout(() => {
-    saveStatus.textContent = '入力内容は自動保存されます';
-  }, 2200);
+function loadFormState() {
+  const raw = localStorage.getItem(STORAGE_KEY);
+  if (!raw) return;
+  try {
+    const data = JSON.parse(raw);
+    Object.entries(data).forEach(([name, value]) => {
+      const elements = form.querySelectorAll(`[name="${CSS.escape(name)}"]`);
+      if (!elements.length) return;
+      const first = elements[0];
+      if (first.type === 'checkbox') {
+        elements.forEach(el => {
+          el.checked = Array.isArray(value) ? value.includes(el.value) : Boolean(value);
+        });
+      } else if (first.type === 'radio') {
+        elements.forEach(el => {
+          el.checked = el.value === value;
+        });
+      } else {
+        first.value = value ?? '';
+      }
+    });
+  } catch (_) {}
 }
 
-function getStepTitle(step) {
-  return steps[step - 1]?.dataset.title || '';
-}
-
-function updateStepUI() {
-  steps.forEach((stepEl, index) => {
-    stepEl.classList.toggle('active', index + 1 === currentStep);
-  });
-
-  currentStepEl.textContent = String(currentStep);
-  stepTitleEl.textContent = getStepTitle(currentStep);
-  progressFill.style.width = `${(currentStep / steps.length) * 100}%`;
-
-  prevBtn.disabled = currentStep === 1;
-  prevBtn.style.opacity = currentStep === 1 ? '0.5' : '1';
-
-  const isLast = currentStep === steps.length;
-  nextBtn.classList.toggle('hidden', isLast);
-  submitWrap.classList.toggle('hidden', !isLast);
-
-  window.scrollTo({ top: 0, behavior: 'smooth' });
-}
-
-function serializeForm() {
+function getFormData() {
   const data = {};
+  const elements = Array.from(form.elements).filter(el => el.name);
+  const grouped = new Map();
 
-  Array.from(form.elements).forEach((el) => {
-    if (!el.name) return;
+  elements.forEach(el => {
+    if (!grouped.has(el.name)) grouped.set(el.name, []);
+    grouped.get(el.name).push(el);
+  });
 
-    if (el.type === 'checkbox') {
-      if (!data[el.name]) data[el.name] = [];
-      if (el.checked) data[el.name].push(el.value || true);
-      return;
-    }
-
-    if (el.type === 'radio') {
-      if (el.checked) data[el.name] = el.value;
-      return;
-    }
-
-    if (el.type !== 'submit' && el.type !== 'button') {
-      data[el.name] = el.value.trim();
+  grouped.forEach((group, name) => {
+    const first = group[0];
+    if (first.type === 'checkbox') {
+      if (group.length === 1) {
+        data[name] = first.checked;
+      } else {
+        data[name] = group.filter(el => el.checked).map(el => el.value);
+      }
+    } else if (first.type === 'radio') {
+      const checked = group.find(el => el.checked);
+      data[name] = checked ? checked.value : '';
+    } else {
+      data[name] = first.value.trim();
     }
   });
 
-  data.__savedAt = new Date().toISOString();
   return data;
 }
 
-function applyFormData(data) {
-  if (!data || typeof data !== 'object') return;
+function showConditionalFields() {
+  const hospitalVisited = form.querySelector('input[name="hospitalVisited"]:checked')?.value;
+  hospitalFields.style.display = hospitalVisited === 'はい' ? 'grid' : 'none';
 
-  Array.from(form.elements).forEach((el) => {
-    if (!el.name || !(el.name in data)) return;
+  const medicine = form.querySelector('input[name="medicine"]:checked')?.value;
+  medicineDetailsWrap.style.display = medicine === 'あり' ? 'flex' : 'none';
+}
 
-    if (el.type === 'checkbox') {
-      el.checked = Array.isArray(data[el.name]) && data[el.name].includes(el.value || true);
+function updateStep() {
+  steps.forEach((step, index) => step.classList.toggle('active', index === currentStep));
+  currentStepText.textContent = String(currentStep + 1);
+  currentStepLabel.textContent = steps[currentStep].dataset.title;
+  progressBar.style.width = `${((currentStep + 1) / steps.length) * 100}%`;
+  prevBtn.classList.toggle('hidden', currentStep === 0);
+  nextBtn.classList.toggle('hidden', currentStep === steps.length - 1);
+  submitBtn.classList.toggle('hidden', currentStep !== steps.length - 1);
+  window.scrollTo({ top: document.getElementById('form-card').offsetTop - 12, behavior: 'smooth' });
+}
+
+function clearErrors(step) {
+  step.querySelectorAll('.error').forEach(el => el.remove());
+}
+
+function addError(fieldContainer, message) {
+  const error = document.createElement('p');
+  error.className = 'error';
+  error.textContent = message;
+  fieldContainer.appendChild(error);
+}
+
+function validateStep(stepIndex) {
+  const step = steps[stepIndex];
+  clearErrors(step);
+  let valid = true;
+  const requiredFields = step.querySelectorAll('[required]');
+  requiredFields.forEach(input => {
+    const field = input.closest('.field') || input.parentElement;
+    if (input.type === 'checkbox') {
+      if (!input.checked) {
+        addError(field, '確認のうえチェックを入れてください。');
+        valid = false;
+      }
       return;
     }
-
-    if (el.type === 'radio') {
-      el.checked = data[el.name] === el.value;
-      return;
-    }
-
-    if (typeof data[el.name] === 'string') {
-      el.value = data[el.name];
+    if (!input.value.trim()) {
+      addError(field, '入力してください。');
+      valid = false;
     }
   });
 
-  updateConditionalAreas();
-}
-
-function saveForm() {
-  const data = serializeForm();
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
-  setSaveStatus('入力内容を保存しました');
-}
-
-function loadForm() {
-  try {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    if (!raw) return;
-    const parsed = JSON.parse(raw);
-    applyFormData(parsed);
-  } catch (error) {
-    console.error(error);
+  if (stepIndex === 2) {
+    const checked = form.querySelectorAll('input[name="symptoms"]:checked').length;
+    if (!checked) {
+      const symptomGroup = step.querySelector('.symptom-groups');
+      addError(symptomGroup, '症状を1つ以上選択してください。');
+      valid = false;
+    }
   }
+
+  return valid;
 }
 
-function clearErrors(stepEl) {
-  stepEl.querySelectorAll('.error').forEach((el) => el.classList.remove('error'));
+function formatValue(value) {
+  if (Array.isArray(value)) return value.length ? value.join('、') : '未入力';
+  if (typeof value === 'boolean') return value ? 'はい' : 'いいえ';
+  return value ? value : '未入力';
 }
 
-function validateStep(step) {
-  const stepEl = steps[step - 1];
-  clearErrors(stepEl);
-  const requiredFields = Array.from(stepEl.querySelectorAll('[required]'));
-  let firstInvalid = null;
+function buildSummary(data) {
+  const fields = [
+    ['お名前', data.name],
+    ['フリガナ', data.furigana],
+    ['年齢', data.age ? `${data.age}歳` : ''],
+    ['性別', data.gender],
+    ['お住まい', data.city],
+    ['お仕事', data.occupation],
+    ['勤務先', data.workplace],
+    ['ご紹介者', data.referrer],
+    ['座っている時間', data.sitTime],
+    ['立っている時間', data.standTime],
+    ['歩く時間', data.walkTime],
+    ['運動習慣', data.exerciseFreq],
+    ['運動内容', data.exerciseDetails],
+    ['お困りの症状', data.symptoms],
+    ['その他の症状', data.symptomOther],
+    ['いつ頃から', data.sinceWhen],
+    ['強く感じる時', data.whenStronger],
+    ['日常生活への影響', data.impact],
+    ['病院受診', data.hospitalVisited],
+    ['病院名', data.hospitalName],
+    ['診断名', data.diagnosis],
+    ['受けた処置', data.treatment],
+    ['既往歴', data.history],
+    ['その他の既往歴', data.historyOther],
+    ['手術歴', data.surgeryHistory],
+    ['服薬', data.medicine],
+    ['服薬内容', data.medicineDetails],
+    ['気になること・ご要望', data.requests],
+  ];
 
-  requiredFields.forEach((field) => {
-    const type = field.type;
-    let valid = true;
-
-    if (type === 'checkbox') {
-      valid = field.checked;
-      if (!valid) field.closest('.checkbox-line')?.classList.add('error');
-    } else if (type === 'radio') {
-      const group = stepEl.querySelectorAll(`input[name="${field.name}"]`);
-      valid = Array.from(group).some((radio) => radio.checked);
-      if (!valid) group.forEach((radio) => radio.closest('.choice-pill')?.classList.add('error'));
-    } else {
-      valid = field.value.trim() !== '';
-      if (!valid) field.classList.add('error');
-    }
-
-    if (!valid && !firstInvalid) firstInvalid = field;
+  summaryContent.innerHTML = '';
+  fields.forEach(([label, value]) => {
+    const item = document.createElement('div');
+    item.className = 'summary-item';
+    item.innerHTML = `<h3>${label}</h3><p>${escapeHtml(formatValue(value))}</p>`;
+    summaryContent.appendChild(item);
   });
 
-  if (!firstInvalid) return true;
+  const summaryText = [
+    '【大阪 自律神経専門整体院 GENE｜事前問診】',
+    ...fields.map(([label, value]) => `${label}：${Array.isArray(value) ? value.join('、') || '未入力' : (value ? value : '未入力')}`),
+  ].join('\n');
 
-  firstInvalid.scrollIntoView({ behavior: 'smooth', block: 'center' });
-  return false;
-}
-
-function sectionMarkup(title, lines) {
-  const filtered = lines.filter(Boolean);
-  if (!filtered.length) return '';
-  return `
-    <div class="result-item">
-      <h3>${title}</h3>
-      ${filtered.map((line) => `<p>${line}</p>`).join('')}
-    </div>
-  `;
+  const encoded = encodeURIComponent(summaryText);
+  lineShareBtn.href = `https://line.me/R/msg/text/?${encoded}`;
+  lineShareBtn.dataset.copy = summaryText;
 }
 
 function escapeHtml(value) {
@@ -178,218 +198,67 @@ function escapeHtml(value) {
     .replace(/</g, '&lt;')
     .replace(/>/g, '&gt;')
     .replace(/"/g, '&quot;')
-    .replace(/'/g, '&#039;');
-}
-
-function formatList(value) {
-  if (!Array.isArray(value) || !value.length) return 'なし';
-  return value.join('、');
-}
-
-function buildResult(data) {
-  const sections = [
-    sectionMarkup('基本情報', [
-      `お名前：${escapeHtml(data.name || '未入力')}`,
-      `フリガナ：${escapeHtml(data.kana || '未入力')}`,
-      `年齢：${escapeHtml(data.age || '未入力')}`,
-      `生年月日：${escapeHtml(data.birthdate || '未入力')}`,
-      `性別：${escapeHtml(data.gender || '未入力')}`,
-      `お住まい：${escapeHtml(data.city || '未入力')}`,
-      `お仕事：${escapeHtml(data.job || '未入力')}`,
-      `勤務先：${escapeHtml(data.workplace || '未入力')}`,
-      `ご紹介者：${escapeHtml(data.referrer || '未入力')}`,
-    ]),
-    sectionMarkup('生活習慣', [
-      `座っている時間：${escapeHtml(data.sitTime || '未選択')}`,
-      `立っている時間：${escapeHtml(data.standTime || '未選択')}`,
-      `歩く時間：${escapeHtml(data.walkTime || '未選択')}`,
-      `運動習慣：${escapeHtml(data.exercise || '未選択')}`,
-      `運動内容・趣味：${escapeHtml(data.exerciseDetail || 'なし')}`,
-    ]),
-    sectionMarkup('お困りの症状', [
-      `症状：${escapeHtml(formatList(data.symptoms))}`,
-      `その他の症状：${escapeHtml(data.symptomOther || 'なし')}`,
-    ]),
-    sectionMarkup('症状の詳細', [
-      `いつ頃から：${escapeHtml(data.since || '未入力')}`,
-      `強く感じる時：${escapeHtml(data.trigger || '未入力')}`,
-      `日常生活への影響：${escapeHtml(data.impact || '未選択')}`,
-    ]),
-    sectionMarkup('医療機関の受診状況', [
-      `受診状況：${escapeHtml(data.hospitalVisit || '未選択')}`,
-      data.hospitalVisit === 'はい' ? `病院名：${escapeHtml(data.hospitalName || '未入力')}` : '',
-      data.hospitalVisit === 'はい' ? `診断名：${escapeHtml(data.diagnosis || '未入力')}` : '',
-      data.hospitalVisit === 'はい' ? `処置：${escapeHtml(data.treatment || '未入力')}` : '',
-    ]),
-    sectionMarkup('既往歴・服薬', [
-      `既往歴：${escapeHtml(formatList(data.history))}`,
-      `既往歴・その他詳細：${escapeHtml(data.historyOther || 'なし')}`,
-      `手術歴：${escapeHtml(data.surgery || 'なし')}`,
-      `服薬：${escapeHtml(data.medication || '未選択')}`,
-      data.medication === 'あり' ? `服薬内容：${escapeHtml(data.medicationDetail || '未入力')}` : '',
-    ]),
-    sectionMarkup('その他・ご要望', [
-      `気になること・ご要望：${escapeHtml(data.requests || 'なし')}`,
-    ]),
-  ];
-
-  resultBody.innerHTML = sections.join('');
-
-  const lineText = [
-    '【大阪 自律神経専門整体院 gene 事前問診フォーム】',
-    `お名前：${data.name || ''}`,
-    `フリガナ：${data.kana || ''}`,
-    `年齢：${data.age || ''}`,
-    `性別：${data.gender || ''}`,
-    `お住まい：${data.city || ''}`,
-    `お仕事：${data.job || ''}`,
-    `勤務先：${data.workplace || ''}`,
-    `ご紹介者：${data.referrer || ''}`,
-    '',
-    `座っている時間：${data.sitTime || ''}`,
-    `立っている時間：${data.standTime || ''}`,
-    `歩く時間：${data.walkTime || ''}`,
-    `運動習慣：${data.exercise || ''}`,
-    `運動内容・趣味：${data.exerciseDetail || ''}`,
-    '',
-    `症状：${Array.isArray(data.symptoms) ? data.symptoms.join('、') : ''}`,
-    `その他の症状：${data.symptomOther || ''}`,
-    `いつ頃から：${data.since || ''}`,
-    `強く感じる時：${data.trigger || ''}`,
-    `日常生活への影響：${data.impact || ''}`,
-    '',
-    `受診状況：${data.hospitalVisit || ''}`,
-    `病院名：${data.hospitalName || ''}`,
-    `診断名：${data.diagnosis || ''}`,
-    `処置：${data.treatment || ''}`,
-    '',
-    `既往歴：${Array.isArray(data.history) ? data.history.join('、') : ''}`,
-    `既往歴・その他詳細：${data.historyOther || ''}`,
-    `手術歴：${data.surgery || ''}`,
-    `服薬：${data.medication || ''}`,
-    `服薬内容：${data.medicationDetail || ''}`,
-    '',
-    `ご要望：${data.requests || ''}`,
-  ].join('\n');
-
-  lineShareBtn.href = `${LINE_SHARE_URL}${encodeURIComponent(lineText)}`;
-}
-
-
-
-async function copyResultText() {
-  const data = serializeForm();
-  const text = [
-    '【大阪 自律神経専門整体院 gene 事前問診フォーム】',
-    `お名前：${data.name || ''}`,
-    `フリガナ：${data.kana || ''}`,
-    `年齢：${data.age || ''}`,
-    `生年月日：${data.birthdate || ''}`,
-    `性別：${data.gender || ''}`,
-    `お住まい：${data.city || ''}`,
-    `お仕事：${data.job || ''}`,
-    `勤務先：${data.workplace || ''}`,
-    `ご紹介者：${data.referrer || ''}`,
-    '',
-    `座っている時間：${data.sitTime || ''}`,
-    `立っている時間：${data.standTime || ''}`,
-    `歩く時間：${data.walkTime || ''}`,
-    `運動習慣：${data.exercise || ''}`,
-    `運動内容・趣味：${data.exerciseDetail || ''}`,
-    '',
-    `症状：${Array.isArray(data.symptoms) ? data.symptoms.join('、') : ''}`,
-    `その他の症状：${data.symptomOther || ''}`,
-    `いつ頃から：${data.since || ''}`,
-    `強く感じる時：${data.trigger || ''}`,
-    `日常生活への影響：${data.impact || ''}`,
-    '',
-    `受診状況：${data.hospitalVisit || ''}`,
-    `病院名：${data.hospitalName || ''}`,
-    `診断名：${data.diagnosis || ''}`,
-    `処置：${data.treatment || ''}`,
-    '',
-    `既往歴：${Array.isArray(data.history) ? data.history.join('、') : ''}`,
-    `既往歴・その他詳細：${data.historyOther || ''}`,
-    `手術歴：${data.surgery || ''}`,
-    `服薬：${data.medication || ''}`,
-    `服薬内容：${data.medicationDetail || ''}`,
-    '',
-    `気になること・ご要望：${data.requests || ''}`
-  ].join('\n');
-
-  try {
-    await navigator.clipboard.writeText(text);
-    setSaveStatus('入力内容をコピーしました');
-  } catch (error) {
-    console.error(error);
-    window.prompt('コピーできない場合は、下の内容をコピーしてください。', text);
-  }
+    .replace(/'/g, '&#39;');
 }
 
 prevBtn.addEventListener('click', () => {
-  if (currentStep > 1) {
+  if (currentStep > 0) {
     currentStep -= 1;
-    updateStepUI();
+    updateStep();
   }
 });
 
 nextBtn.addEventListener('click', () => {
   if (!validateStep(currentStep)) return;
-  if (currentStep < steps.length) {
+  if (currentStep < steps.length - 1) {
     currentStep += 1;
-    updateStepUI();
+    updateStep();
   }
 });
 
 form.addEventListener('input', () => {
-  updateConditionalAreas();
-  saveForm();
+  saveFormState();
+  showConditionalFields();
 });
-
 form.addEventListener('change', () => {
-  updateConditionalAreas();
-  saveForm();
+  saveFormState();
+  showConditionalFields();
 });
 
 form.addEventListener('submit', (event) => {
   event.preventDefault();
   if (!validateStep(currentStep)) return;
-
-  const data = serializeForm();
-  buildResult(data);
-  resultCard.classList.remove('hidden');
+  const data = getFormData();
+  buildSummary(data);
   form.classList.add('hidden');
-  document.querySelector('.progress-card').classList.add('hidden');
-  document.querySelector('.intro-card').classList.add('hidden');
-  window.scrollTo({ top: 0, behavior: 'smooth' });
+  summarySection.classList.remove('hidden');
+  summarySection.scrollIntoView({ behavior: 'smooth', block: 'start' });
 });
-
-copyBtn?.addEventListener('click', copyResultText);
 
 editBtn.addEventListener('click', () => {
-  resultCard.classList.add('hidden');
+  summarySection.classList.add('hidden');
   form.classList.remove('hidden');
-  document.querySelector('.progress-card').classList.remove('hidden');
-  document.querySelector('.intro-card').classList.remove('hidden');
-  updateStepUI();
+  document.getElementById('form-card').scrollIntoView({ behavior: 'smooth', block: 'start' });
 });
 
-clearBtn.addEventListener('click', () => {
-  localStorage.removeItem(STORAGE_KEY);
-  form.reset();
-  updateConditionalAreas();
-  currentStep = 1;
-  updateStepUI();
-  setSaveStatus('入力内容をリセットしました');
+copyBtn.addEventListener('click', async () => {
+  const text = lineShareBtn.dataset.copy || '';
+  try {
+    await navigator.clipboard.writeText(text);
+    copyBtn.textContent = 'コピーしました';
+    setTimeout(() => { copyBtn.textContent = '内容をコピーする'; }, 1800);
+  } catch (_) {
+    alert('コピーできませんでした。手動で選択してコピーしてください。');
+  }
 });
 
-
-loadForm();
-updateConditionalAreas();
-updateStepUI();
+loadFormState();
+showConditionalFields();
+updateStep();
+medicineDetailsWrap.style.display = 'none';
 
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
-    navigator.serviceWorker.register('sw.js').catch((error) => console.error(error));
+    navigator.serviceWorker.register('sw.js').catch(() => {});
   });
 }
