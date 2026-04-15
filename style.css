@@ -460,3 +460,12 @@ textarea {
   .result-actions > a { width: 100%; }
   .bg-mark { font-size: clamp(4rem, 28vw, 8rem); }
 }
+
+
+.sub-title{margin:.4rem 0 0;color:#d9c17e;font-size:1rem;letter-spacing:.12em;}
+.share-guide{margin:0 0 1.25rem;padding:1rem 1.1rem;border:1px solid rgba(217,193,126,.28);border-radius:16px;background:rgba(217,193,126,.06);}
+.share-guide p{margin:.25rem 0;color:#f2ead1;font-size:.95rem;line-height:1.8;}
+.agreement span{line-height:1.9;}
+.result-actions{flex-wrap:wrap;}
+.result-actions .btn{min-width:220px;}
+@media (max-width: 640px){.result-actions .btn{min-width:100%;}.sub-title{font-size:.92rem;}}

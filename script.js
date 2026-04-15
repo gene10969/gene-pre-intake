@@ -1,4 +1,4 @@
-const STORAGE_KEY = 'gene_pre_intake_form_v1';
+const STORAGE_KEY = 'gene_pre_intake_form_v2';
 const LINE_SHARE_URL = 'https://line.me/R/msg/text/?';
 
 const form = document.getElementById('intakeForm');
@@ -13,10 +13,10 @@ const saveStatus = document.getElementById('saveStatus');
 const hospitalFields = document.getElementById('hospitalFields');
 const medicationFields = document.getElementById('medicationFields');
 const clearBtn = document.getElementById('clearBtn');
-const downloadBtn = document.getElementById('downloadBtn');
 const resultCard = document.getElementById('resultCard');
 const resultBody = document.getElementById('resultBody');
 const editBtn = document.getElementById('editBtn');
+const copyBtn = document.getElementById('copyBtn');
 const lineShareBtn = document.getElementById('lineShareBtn');
 
 let currentStep = 1;
@@ -236,7 +236,7 @@ function buildResult(data) {
   resultBody.innerHTML = sections.join('');
 
   const lineText = [
-    '【gene 事前問診フォーム】',
+    '【大阪 自律神経専門整体院 gene 事前問診フォーム】',
     `お名前：${data.name || ''}`,
     `フリガナ：${data.kana || ''}`,
     `年齢：${data.age || ''}`,
@@ -275,17 +275,55 @@ function buildResult(data) {
   lineShareBtn.href = `${LINE_SHARE_URL}${encodeURIComponent(lineText)}`;
 }
 
-function downloadJson() {
+
+
+async function copyResultText() {
   const data = serializeForm();
-  const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  const date = new Date().toISOString().slice(0, 10);
-  const safeName = (data.name || 'patient').replace(/\s+/g, '_');
-  a.href = url;
-  a.download = `gene-intake-${safeName}-${date}.json`;
-  a.click();
-  URL.revokeObjectURL(url);
+  const text = [
+    '【大阪 自律神経専門整体院 gene 事前問診フォーム】',
+    `お名前：${data.name || ''}`,
+    `フリガナ：${data.kana || ''}`,
+    `年齢：${data.age || ''}`,
+    `生年月日：${data.birthdate || ''}`,
+    `性別：${data.gender || ''}`,
+    `お住まい：${data.city || ''}`,
+    `お仕事：${data.job || ''}`,
+    `勤務先：${data.workplace || ''}`,
+    `ご紹介者：${data.referrer || ''}`,
+    '',
+    `座っている時間：${data.sitTime || ''}`,
+    `立っている時間：${data.standTime || ''}`,
+    `歩く時間：${data.walkTime || ''}`,
+    `運動習慣：${data.exercise || ''}`,
+    `運動内容・趣味：${data.exerciseDetail || ''}`,
+    '',
+    `症状：${Array.isArray(data.symptoms) ? data.symptoms.join('、') : ''}`,
+    `その他の症状：${data.symptomOther || ''}`,
+    `いつ頃から：${data.since || ''}`,
+    `強く感じる時：${data.trigger || ''}`,
+    `日常生活への影響：${data.impact || ''}`,
+    '',
+    `受診状況：${data.hospitalVisit || ''}`,
+    `病院名：${data.hospitalName || ''}`,
+    `診断名：${data.diagnosis || ''}`,
+    `処置：${data.treatment || ''}`,
+    '',
+    `既往歴：${Array.isArray(data.history) ? data.history.join('、') : ''}`,
+    `既往歴・その他詳細：${data.historyOther || ''}`,
+    `手術歴：${data.surgery || ''}`,
+    `服薬：${data.medication || ''}`,
+    `服薬内容：${data.medicationDetail || ''}`,
+    '',
+    `気になること・ご要望：${data.requests || ''}`
+  ].join('\n');
+
+  try {
+    await navigator.clipboard.writeText(text);
+    setSaveStatus('入力内容をコピーしました');
+  } catch (error) {
+    console.error(error);
+    window.prompt('コピーできない場合は、下の内容をコピーしてください。', text);
+  }
 }
 
 prevBtn.addEventListener('click', () => {
@@ -326,6 +364,8 @@ form.addEventListener('submit', (event) => {
   window.scrollTo({ top: 0, behavior: 'smooth' });
 });
 
+copyBtn?.addEventListener('click', copyResultText);
+
 editBtn.addEventListener('click', () => {
   resultCard.classList.add('hidden');
   form.classList.remove('hidden');
@@ -343,7 +383,6 @@ clearBtn.addEventListener('click', () => {
   setSaveStatus('入力内容をリセットしました');
 });
 
-downloadBtn.addEventListener('click', downloadJson);
 
 loadForm();
 updateConditionalAreas();

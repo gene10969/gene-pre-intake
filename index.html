@@ -8,15 +8,16 @@
   <link rel="manifest" href="manifest.json" />
   <link rel="apple-touch-icon" href="assets/icon-192.png" />
   <link rel="stylesheet" href="style.css" />
-  <title>gene 事前問診フォーム</title>
+  <title>大阪 自律神経専門整体院 gene｜事前問診フォーム</title>
 </head>
 <body>
   <div class="bg-mark" aria-hidden="true">gene</div>
 
   <header class="site-header">
     <div class="site-inner">
-      <p class="eyebrow">大阪 自律神経専門整体院</p>
-      <h1>事前問診フォーム</h1>
+      <p class="eyebrow">大阪 自律神経専門整体院 gene</p>
+      <h1>大阪 自律神経専門整体院 gene</h1>
+      <p class="sub-title">事前問診フォーム</p>
       <p class="lead">来院前にご記入いただくことで、当日のご案内がよりスムーズになります。</p>
     </div>
   </header>
@@ -346,7 +347,7 @@
 
         <label class="checkbox-line agreement">
           <input type="checkbox" name="confirm" required />
-          <span>内容を確認し、施術前確認のために使用されることに同意します。</span>
+          <span>入力内容を確認しました。来院前の確認と施術の参考として使用されることに同意し、内容確認画面へ進みます。</span>
         </label>
 
         <div class="notice-box">
@@ -359,13 +360,12 @@
         <div class="save-status" id="saveStatus">入力内容は自動保存されます</div>
 
         <div class="action-row top-actions">
-          <button type="button" class="btn btn-sub" id="prevBtn">戻る</button>
-          <button type="button" class="btn btn-main" id="nextBtn">次へ</button>
+          <button type="button" class="btn btn-sub" id="prevBtn">前の項目へ</button>
+          <button type="button" class="btn btn-main" id="nextBtn">次の項目へ</button>
         </div>
 
         <div class="utility-row">
           <button type="button" class="btn btn-ghost" id="clearBtn">入力内容をリセット</button>
-          <button type="button" class="btn btn-ghost" id="downloadBtn">JSON保存</button>
         </div>
 
         <div class="submit-wrap hidden" id="submitWrap">
@@ -377,14 +377,20 @@
     <section id="resultCard" class="card result-card hidden" aria-live="polite">
       <div class="card-head">
         <h2>入力内容の確認</h2>
-        <p>必要に応じてこの内容をLINEで共有できます。</p>
+        <p>LINEで送る場合は、下のボタンを押すとLINEが開き、入力内容がメッセージ欄に入った状態になります。</p>
+      </div>
+
+      <div class="share-guide">
+        <p>スマホではLINEアプリが起動します。PCではLINEの画面またはブラウザが開くことがあります。</p>
+        <p>うまく開かない場合は「内容をコピーする」を押して、LINEへ貼り付けてご利用ください。</p>
       </div>
 
       <div id="resultBody" class="result-body"></div>
 
       <div class="result-actions">
         <button type="button" class="btn btn-sub" id="editBtn">内容を修正する</button>
-        <a id="lineShareBtn" class="btn btn-main" href="#" target="_blank" rel="noopener noreferrer">LINEで共有する</a>
+        <button type="button" class="btn btn-ghost" id="copyBtn">内容をコピーする</button>
+        <a id="lineShareBtn" class="btn btn-main" href="#" target="_blank" rel="noopener noreferrer">LINEを開いて共有する</a>
       </div>
     </section>
   </main>
