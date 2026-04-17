@@ -1,326 +1,320 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="theme-color" content="#000000" />
-  <meta name="description" content="大阪 自律神経専門整体院 GENE 事前問診フォーム" />
-  <title>大阪 自律神経専門整体院 GENE｜事前問診フォーム</title>
-  <link rel="manifest" href="manifest.json" />
-  <link rel="stylesheet" href="style.css" />
-  <link rel="icon" href="assets/icon-192.png" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#000000">
+  <meta name="description" content="大阪 自律神経専門整体院 gene の事前問診フォームです。来院前のご記入で当日のご案内がよりスムーズになります。">
+  <title>大阪 自律神経専門整体院 gene｜事前問診フォーム</title>
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" href="assets/icon-192.png">
+  <link rel="apple-touch-icon" href="assets/icon-192.png">
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <div class="bg-logo" aria-hidden="true">GENE</div>
+  <div class="bg-logo" aria-hidden="true">gene</div>
 
-  <main class="page">
+  <main class="site-wrap">
     <header class="hero card">
       <p class="eyebrow">大阪 自律神経専門整体院 gene</p>
       <h1>事前問診フォーム</h1>
       <p class="lead">来院前にご記入いただくことで、当日のご案内がよりスムーズになります。</p>
-      <div class="hero-actions">
-        <a class="btn btn-primary" href="#form-card">入力を始める</a>
-        <a class="btn btn-secondary" id="lineReserveTop" href="https://lin.ee/e7d7Nmw" target="_blank" rel="noopener noreferrer">LINE予約へ進む</a>
-      </div>
+
+      <section class="guide">
+        <h2>ご記入前のご案内</h2>
+        <div class="guide-grid">
+          <ul>
+            <li>所要時間の目安は約3〜5分です。</li>
+            <li>入力内容は施術前の確認のために使用します。</li>
+            <li>このフォームは医療上の診断を行うものではありません。</li>
+          </ul>
+          <ul>
+            <li>途中まで入力した内容はこの端末に一時保存されます。</li>
+            <li>送信前に内容確認画面が表示されます。</li>
+            <li>ご不明点があればLINEよりご連絡ください。</li>
+          </ul>
+        </div>
+      </section>
     </header>
 
-    <section class="card notice-grid">
-      <div>
-        <h2>ご記入前のご案内</h2>
-        <ul class="clean-list">
-          <li>所要時間の目安は約3〜5分です。</li>
-          <li>入力内容は施術前の確認のために使用します。</li>
-          <li>このフォームは医療上の診断を行うものではありません。</li>
-        </ul>
-      </div>
-      <div>
-        <h2>安心してご利用いただくために</h2>
-        <ul class="clean-list">
-          <li>途中まで入力した内容は、この端末に自動保存されます。</li>
-          <li>送信後は、内容確認用の画面が表示されます。</li>
-          <li>ご不明点があれば、LINEよりご連絡ください。</li>
-        </ul>
-      </div>
-    </section>
-
-    <section class="card progress-card" id="form-card">
-      <div class="progress-head">
+    <section class="progress card">
+      <div class="progress-top">
         <div>
-          <p class="muted">進行状況</p>
-          <p class="progress-count"><span id="currentStepText">1</span> / 7</p>
+          <p class="progress-label">進行状況</p>
+          <p class="progress-count"><span id="currentStep">1</span> / 7</p>
         </div>
-        <p class="step-label" id="currentStepLabel">基本情報</p>
+        <p class="progress-name" id="stepName">基本情報</p>
       </div>
-      <div class="progress-bar"><span id="progressBar"></span></div>
+      <div class="progress-bar"><span id="progressFill"></span></div>
     </section>
 
-    <form id="intakeForm" class="card form-card" novalidate>
-      <section class="step active" data-step="1" data-title="基本情報">
+    <form id="intakeForm" class="card" novalidate>
+      <section class="step active" data-step="1" data-name="基本情報">
         <h2>基本情報</h2>
-        <div class="field-grid two-col">
-          <label class="field">
+        <div class="grid two">
+          <label>
             <span>お名前 <em>必須</em></span>
-            <input type="text" name="name" autocomplete="name" required />
+            <input type="text" id="name" name="name" autocomplete="name" required>
           </label>
-          <label class="field">
+          <label>
             <span>フリガナ <em>必須</em></span>
-            <input type="text" name="furigana" required />
+            <input type="text" id="furigana" name="furigana" required>
           </label>
-          <label class="field">
+          <label>
             <span>年齢 <em>必須</em></span>
-            <input type="number" name="age" min="0" max="120" inputmode="numeric" required />
+            <input type="number" id="age" name="age" min="0" max="120" inputmode="numeric" required>
           </label>
-          <fieldset class="field">
-            <legend>性別 <small>任意</small></legend>
-            <div class="option-grid inline-options">
-              <label><input type="radio" name="gender" value="男性">男性</label>
-              <label><input type="radio" name="gender" value="女性">女性</label>
-              <label><input type="radio" name="gender" value="その他">その他</label>
-              <label><input type="radio" name="gender" value="無回答">無回答</label>
+          <fieldset>
+            <legend>性別</legend>
+            <div class="choice-grid compact">
+              <label class="choice"><input type="radio" name="gender" value="男性"><span>男性</span></label>
+              <label class="choice"><input type="radio" name="gender" value="女性"><span>女性</span></label>
+              <label class="choice"><input type="radio" name="gender" value="その他"><span>その他</span></label>
+              <label class="choice"><input type="radio" name="gender" value="無回答"><span>無回答</span></label>
             </div>
           </fieldset>
-          <label class="field">
-            <span>お住まい（市区町村まで） <small>任意</small></span>
-            <input type="text" name="city" autocomplete="address-level2" />
+          <label>
+            <span>お住まい（市区町村まで）</span>
+            <input type="text" id="address" name="address" autocomplete="address-level2">
           </label>
-          <label class="field">
-            <span>お仕事 <small>任意</small></span>
-            <input type="text" name="occupation" autocomplete="organization-title" />
+          <label>
+            <span>お仕事</span>
+            <input type="text" id="job" name="job" autocomplete="organization-title">
           </label>
-          <label class="field">
-            <span>勤務先 <small>任意</small></span>
-            <input type="text" name="workplace" autocomplete="organization" />
+          <label>
+            <span>勤務先</span>
+            <input type="text" id="workplace" name="workplace" autocomplete="organization">
           </label>
-          <label class="field">
-            <span>ご紹介者 <small>任意</small></span>
-            <input type="text" name="referrer" />
+          <label>
+            <span>ご紹介者</span>
+            <input type="text" id="referrer" name="referrer">
           </label>
         </div>
       </section>
 
-      <section class="step" data-step="2" data-title="生活習慣">
+      <section class="step" data-step="2" data-name="生活習慣">
         <h2>生活習慣</h2>
-        <div class="field-grid">
-          <fieldset class="field">
+        <div class="stack">
+          <fieldset>
             <legend>座っている時間（1日）</legend>
-            <div class="option-grid">
-              <label><input type="radio" name="sitTime" value="〜2時間">〜2時間</label>
-              <label><input type="radio" name="sitTime" value="2〜4時間">2〜4時間</label>
-              <label><input type="radio" name="sitTime" value="4〜6時間">4〜6時間</label>
-              <label><input type="radio" name="sitTime" value="6時間以上">6時間以上</label>
+            <div class="choice-grid compact">
+              <label class="choice"><input type="radio" name="sitHours" value="〜2時間"><span>〜2時間</span></label>
+              <label class="choice"><input type="radio" name="sitHours" value="2〜4時間"><span>2〜4時間</span></label>
+              <label class="choice"><input type="radio" name="sitHours" value="4〜6時間"><span>4〜6時間</span></label>
+              <label class="choice"><input type="radio" name="sitHours" value="6時間以上"><span>6時間以上</span></label>
             </div>
           </fieldset>
-          <fieldset class="field">
+          <fieldset>
             <legend>立っている時間（1日）</legend>
-            <div class="option-grid">
-              <label><input type="radio" name="standTime" value="〜2時間">〜2時間</label>
-              <label><input type="radio" name="standTime" value="2〜4時間">2〜4時間</label>
-              <label><input type="radio" name="standTime" value="4〜6時間">4〜6時間</label>
-              <label><input type="radio" name="standTime" value="6時間以上">6時間以上</label>
+            <div class="choice-grid compact">
+              <label class="choice"><input type="radio" name="standHours" value="〜2時間"><span>〜2時間</span></label>
+              <label class="choice"><input type="radio" name="standHours" value="2〜4時間"><span>2〜4時間</span></label>
+              <label class="choice"><input type="radio" name="standHours" value="4〜6時間"><span>4〜6時間</span></label>
+              <label class="choice"><input type="radio" name="standHours" value="6時間以上"><span>6時間以上</span></label>
             </div>
           </fieldset>
-          <fieldset class="field">
+          <fieldset>
             <legend>歩く時間（1日）</legend>
-            <div class="option-grid">
-              <label><input type="radio" name="walkTime" value="ほぼなし">ほぼなし</label>
-              <label><input type="radio" name="walkTime" value="30分以内">30分以内</label>
-              <label><input type="radio" name="walkTime" value="1時間程度">1時間程度</label>
-              <label><input type="radio" name="walkTime" value="1時間以上">1時間以上</label>
+            <div class="choice-grid compact">
+              <label class="choice"><input type="radio" name="walkHours" value="ほぼなし"><span>ほぼなし</span></label>
+              <label class="choice"><input type="radio" name="walkHours" value="30分以内"><span>30分以内</span></label>
+              <label class="choice"><input type="radio" name="walkHours" value="1時間程度"><span>1時間程度</span></label>
+              <label class="choice"><input type="radio" name="walkHours" value="1時間以上"><span>1時間以上</span></label>
             </div>
           </fieldset>
-          <fieldset class="field">
-            <legend>スポーツ・運動習慣</legend>
-            <div class="option-grid">
-              <label><input type="radio" name="exerciseFreq" value="なし">なし</label>
-              <label><input type="radio" name="exerciseFreq" value="週1回">週1回</label>
-              <label><input type="radio" name="exerciseFreq" value="週2〜3回">週2〜3回</label>
-              <label><input type="radio" name="exerciseFreq" value="週4回以上">週4回以上</label>
+          <fieldset>
+            <legend>スポーツ / 運動習慣</legend>
+            <div class="choice-grid compact">
+              <label class="choice"><input type="radio" name="exerciseFrequency" value="なし"><span>なし</span></label>
+              <label class="choice"><input type="radio" name="exerciseFrequency" value="週1回"><span>週1回</span></label>
+              <label class="choice"><input type="radio" name="exerciseFrequency" value="週2〜3回"><span>週2〜3回</span></label>
+              <label class="choice"><input type="radio" name="exerciseFrequency" value="週4回以上"><span>週4回以上</span></label>
             </div>
           </fieldset>
-          <label class="field">
-            <span>運動内容 <small>任意</small></span>
-            <input type="text" name="exerciseDetails" placeholder="例：ウォーキング、ジム、ヨガ" />
+          <label>
+            <span>運動内容</span>
+            <input type="text" id="exerciseDetail" name="exerciseDetail">
           </label>
         </div>
       </section>
 
-      <section class="step" data-step="3" data-title="お困りの症状">
+      <section class="step" data-step="3" data-name="お困りの症状">
         <h2>お困りの症状</h2>
-        <p class="section-note">当てはまるものを複数選択してください。</p>
         <div class="symptom-groups">
-          <fieldset class="field">
+          <fieldset>
             <legend>神経・精神系</legend>
-            <div class="option-grid cards">
-              <label><input type="checkbox" name="symptoms" value="めまい">めまい</label>
-              <label><input type="checkbox" name="symptoms" value="耳鳴り">耳鳴り</label>
-              <label><input type="checkbox" name="symptoms" value="不安感">不安感</label>
-              <label><input type="checkbox" name="symptoms" value="パニック">パニック</label>
-              <label><input type="checkbox" name="symptoms" value="不眠">不眠</label>
-              <label><input type="checkbox" name="symptoms" value="集中力低下">集中力低下</label>
+            <div class="choice-grid">
+              <label class="choice"><input type="checkbox" name="symptoms" value="めまい"><span>めまい</span></label>
+              <label class="choice"><input type="checkbox" name="symptoms" value="耳鳴り"><span>耳鳴り</span></label>
+              <label class="choice"><input type="checkbox" name="symptoms" value="不安感"><span>不安感</span></label>
+              <label class="choice"><input type="checkbox" name="symptoms" value="パニック"><span>パニック</span></label>
+              <label class="choice"><input type="checkbox" name="symptoms" value="不眠"><span>不眠</span></label>
+              <label class="choice"><input type="checkbox" name="symptoms" value="集中力低下"><span>集中力低下</span></label>
             </div>
           </fieldset>
-          <fieldset class="field">
+          <fieldset>
             <legend>消化・内臓系</legend>
-            <div class="option-grid cards">
-              <label><input type="checkbox" name="symptoms" value="胃の不快感">胃の不快感</label>
-              <label><input type="checkbox" name="symptoms" value="食欲不振">食欲不振</label>
-              <label><input type="checkbox" name="symptoms" value="下痢">下痢</label>
-              <label><input type="checkbox" name="symptoms" value="便秘">便秘</label>
-              <label><input type="checkbox" name="symptoms" value="過敏性腸症候群">過敏性腸症候群</label>
+            <div class="choice-grid">
+              <label class="choice"><input type="checkbox" name="symptoms" value="胃の不快感"><span>胃の不快感</span></label>
+              <label class="choice"><input type="checkbox" name="symptoms" value="食欲不振"><span>食欲不振</span></label>
+              <label class="choice"><input type="checkbox" name="symptoms" value="下痢 / 便秘"><span>下痢 / 便秘</span></label>
+              <label class="choice"><input type="checkbox" name="symptoms" value="過敏性腸症候群"><span>過敏性腸症候群</span></label>
             </div>
           </fieldset>
-          <fieldset class="field">
+          <fieldset>
             <legend>身体症状</legend>
-            <div class="option-grid cards">
-              <label><input type="checkbox" name="symptoms" value="頭痛">頭痛</label>
-              <label><input type="checkbox" name="symptoms" value="肩こり">肩こり</label>
-              <label><input type="checkbox" name="symptoms" value="腰痛">腰痛</label>
-              <label><input type="checkbox" name="symptoms" value="倦怠感">倦怠感</label>
-              <label><input type="checkbox" name="symptoms" value="冷え">冷え</label>
-              <label><input type="checkbox" name="symptoms" value="動悸">動悸</label>
+            <div class="choice-grid">
+              <label class="choice"><input type="checkbox" name="symptoms" value="頭痛"><span>頭痛</span></label>
+              <label class="choice"><input type="checkbox" name="symptoms" value="肩こり"><span>肩こり</span></label>
+              <label class="choice"><input type="checkbox" name="symptoms" value="腰痛"><span>腰痛</span></label>
+              <label class="choice"><input type="checkbox" name="symptoms" value="倦怠感"><span>倦怠感</span></label>
+              <label class="choice"><input type="checkbox" name="symptoms" value="冷え"><span>冷え</span></label>
+              <label class="choice"><input type="checkbox" name="symptoms" value="動悸"><span>動悸</span></label>
             </div>
           </fieldset>
-          <fieldset class="field">
+          <fieldset>
             <legend>皮膚・その他</legend>
-            <div class="option-grid cards">
-              <label><input type="checkbox" name="symptoms" value="アトピー">アトピー</label>
-              <label><input type="checkbox" name="symptoms" value="湿疹">湿疹</label>
-              <label><input type="checkbox" name="symptoms" value="アレルギー症状">アレルギー症状</label>
+            <div class="choice-grid">
+              <label class="choice"><input type="checkbox" name="symptoms" value="アトピー"><span>アトピー</span></label>
+              <label class="choice"><input type="checkbox" name="symptoms" value="湿疹"><span>湿疹</span></label>
+              <label class="choice"><input type="checkbox" name="symptoms" value="アレルギー"><span>アレルギー</span></label>
             </div>
           </fieldset>
-          <label class="field">
-            <span>その他の症状 <small>任意</small></span>
-            <input type="text" name="symptomOther" />
+          <label>
+            <span>その他の症状</span>
+            <textarea id="symptomsOther" name="symptomsOther" rows="3"></textarea>
           </label>
         </div>
       </section>
 
-      <section class="step" data-step="4" data-title="症状の詳細">
+      <section class="step" data-step="4" data-name="症状の詳細">
         <h2>症状の詳細</h2>
-        <div class="field-grid">
-          <label class="field">
+        <div class="stack">
+          <label>
             <span>いつ頃からですか？ <em>必須</em></span>
-            <textarea name="sinceWhen" rows="4" required></textarea>
+            <textarea id="sinceWhen" name="sinceWhen" rows="4" required></textarea>
           </label>
-          <label class="field">
+          <label>
             <span>どんな時に強く感じますか？ <em>必須</em></span>
-            <textarea name="whenStronger" rows="4" required></textarea>
+            <textarea id="whenStrong" name="whenStrong" rows="4" required></textarea>
           </label>
-          <fieldset class="field">
+          <fieldset>
             <legend>日常生活への影響</legend>
-            <div class="option-grid">
-              <label><input type="radio" name="impact" value="ほとんど影響なし">ほとんど影響なし</label>
-              <label><input type="radio" name="impact" value="少し気になる">少し気になる</label>
-              <label><input type="radio" name="impact" value="日常に支障あり">日常に支障あり</label>
-              <label><input type="radio" name="impact" value="かなりつらい">かなりつらい</label>
+            <div class="choice-grid compact">
+              <label class="choice"><input type="radio" name="impact" value="ほとんど影響なし"><span>ほとんど影響なし</span></label>
+              <label class="choice"><input type="radio" name="impact" value="少し気になる"><span>少し気になる</span></label>
+              <label class="choice"><input type="radio" name="impact" value="日常に支障あり"><span>日常に支障あり</span></label>
+              <label class="choice"><input type="radio" name="impact" value="かなりつらい"><span>かなりつらい</span></label>
             </div>
           </fieldset>
         </div>
       </section>
 
-      <section class="step" data-step="5" data-title="受診状況">
+      <section class="step" data-step="5" data-name="医療機関の受診状況">
         <h2>医療機関の受診状況</h2>
-        <fieldset class="field">
-          <legend>今回の症状で病院に行きましたか？</legend>
-          <div class="option-grid inline-options">
-            <label><input type="radio" name="hospitalVisited" value="はい">はい</label>
-            <label><input type="radio" name="hospitalVisited" value="いいえ">いいえ</label>
-          </div>
-        </fieldset>
-        <div id="hospitalFields" class="field-grid two-col hidden-block">
-          <label class="field">
-            <span>病院名</span>
-            <input type="text" name="hospitalName" />
-          </label>
-          <label class="field">
-            <span>診断名</span>
-            <input type="text" name="diagnosis" />
-          </label>
-          <label class="field full-width">
-            <span>受けた処置</span>
-            <textarea name="treatment" rows="4"></textarea>
-          </label>
-        </div>
-      </section>
-
-      <section class="step" data-step="6" data-title="既往歴・服薬">
-        <h2>既往歴・服薬</h2>
-        <fieldset class="field">
-          <legend>既往歴（複数選択可）</legend>
-          <div class="option-grid cards">
-            <label><input type="checkbox" name="history" value="特になし">特になし</label>
-            <label><input type="checkbox" name="history" value="うつ症状">うつ症状</label>
-            <label><input type="checkbox" name="history" value="自律神経の不調">自律神経の不調</label>
-            <label><input type="checkbox" name="history" value="高血圧">高血圧</label>
-            <label><input type="checkbox" name="history" value="糖尿病">糖尿病</label>
-            <label><input type="checkbox" name="history" value="心疾患">心疾患</label>
-            <label><input type="checkbox" name="history" value="脳疾患">脳疾患</label>
-            <label><input type="checkbox" name="history" value="アレルギー">アレルギー</label>
-          </div>
-        </fieldset>
-        <div class="field-grid">
-          <label class="field">
-            <span>その他の既往歴 <small>任意</small></span>
-            <input type="text" name="historyOther" />
-          </label>
-          <label class="field">
-            <span>手術歴 <small>任意</small></span>
-            <textarea name="surgeryHistory" rows="3"></textarea>
-          </label>
-          <fieldset class="field">
-            <legend>現在の服薬</legend>
-            <div class="option-grid inline-options">
-              <label><input type="radio" name="medicine" value="なし">なし</label>
-              <label><input type="radio" name="medicine" value="あり">あり</label>
+        <div class="stack">
+          <fieldset>
+            <legend>今回の症状で病院に行きましたか？</legend>
+            <div class="choice-grid compact">
+              <label class="choice"><input type="radio" name="visitedHospital" value="はい"><span>はい</span></label>
+              <label class="choice"><input type="radio" name="visitedHospital" value="いいえ"><span>いいえ</span></label>
             </div>
           </fieldset>
-          <label class="field full-width" id="medicineDetailsWrap">
-            <span>服薬内容 <small>任意</small></span>
-            <textarea name="medicineDetails" rows="3" placeholder="お薬名や分かる範囲の内容をご記入ください"></textarea>
+          <div id="hospitalFields" class="grid two conditional hidden">
+            <label>
+              <span>病院名</span>
+              <input type="text" id="hospitalName" name="hospitalName">
+            </label>
+            <label>
+              <span>診断名</span>
+              <input type="text" id="diagnosis" name="diagnosis">
+            </label>
+            <label class="full">
+              <span>受けた処置</span>
+              <textarea id="treatment" name="treatment" rows="4"></textarea>
+            </label>
+          </div>
+        </div>
+      </section>
+
+      <section class="step" data-step="6" data-name="既往歴・服薬">
+        <h2>既往歴・服薬</h2>
+        <div class="stack">
+          <fieldset>
+            <legend>既往歴（複数選択可）</legend>
+            <div class="choice-grid">
+              <label class="choice"><input type="checkbox" name="history" value="特になし"><span>特になし</span></label>
+              <label class="choice"><input type="checkbox" name="history" value="うつ症状"><span>うつ症状</span></label>
+              <label class="choice"><input type="checkbox" name="history" value="自律神経の不調"><span>自律神経の不調</span></label>
+              <label class="choice"><input type="checkbox" name="history" value="高血圧"><span>高血圧</span></label>
+              <label class="choice"><input type="checkbox" name="history" value="糖尿病"><span>糖尿病</span></label>
+              <label class="choice"><input type="checkbox" name="history" value="心疾患"><span>心疾患</span></label>
+              <label class="choice"><input type="checkbox" name="history" value="脳疾患"><span>脳疾患</span></label>
+              <label class="choice"><input type="checkbox" name="history" value="アレルギー"><span>アレルギー</span></label>
+            </div>
+          </fieldset>
+          <label>
+            <span>その他の既往歴</span>
+            <textarea id="historyOther" name="historyOther" rows="3"></textarea>
+          </label>
+          <label>
+            <span>手術歴</span>
+            <textarea id="surgery" name="surgery" rows="3"></textarea>
+          </label>
+          <fieldset>
+            <legend>現在の服薬</legend>
+            <div class="choice-grid compact">
+              <label class="choice"><input type="radio" name="medication" value="なし"><span>なし</span></label>
+              <label class="choice"><input type="radio" name="medication" value="あり"><span>あり</span></label>
+            </div>
+          </fieldset>
+          <label>
+            <span>服薬内容</span>
+            <textarea id="medicationDetail" name="medicationDetail" rows="3"></textarea>
           </label>
         </div>
       </section>
 
-      <section class="step" data-step="7" data-title="その他・確認">
+      <section class="step" data-step="7" data-name="その他・確認">
         <h2>その他・確認</h2>
-        <div class="field-grid">
-          <label class="field">
-            <span>気になること・ご要望 <small>任意</small></span>
-            <textarea name="requests" rows="5"></textarea>
+        <div class="stack">
+          <label>
+            <span>気になること / ご要望</span>
+            <textarea id="request" name="request" rows="4"></textarea>
           </label>
-          <label class="field consent-box">
-            <input type="checkbox" name="consent" required />
-            <span>
-              ご記入内容は施術前の確認に利用されること、またこのフォームが医療上の診断を目的としたものではないことを確認し、送信内容に相違がないことに同意します。<br>
-              <strong>※内容をご確認のうえ、チェックを入れて送信へお進みください。</strong>
-            </span>
-          </label>
+
+          <div class="consent-box">
+            <p>ご入力いただいた内容は、当日の確認および施術の参考として使用します。内容をご確認のうえ、LINEで送信していただくと受付がスムーズです。</p>
+            <label class="consent-check">
+              <input type="checkbox" id="consent" name="consent" required>
+              <span>内容を確認し、上記の目的で送信することに同意します。</span>
+            </label>
+          </div>
+
+          <div class="notice-box">
+            <p>「LINEで内容を送る」を押すと、geneのLINE公式アカウントのトーク画面が開きます。</p>
+            <p>入力内容はメッセージ欄に自動で入りますので、そのまま送信してください。</p>
+            <p class="small-note">※PCではLINEアプリへ遷移しにくい場合があります。スマートフォンからの送信がおすすめです。</p>
+          </div>
+
+          <div id="previewBox" class="preview-box hidden">
+            <h3>送信内容の確認</h3>
+            <pre id="previewText"></pre>
+          </div>
         </div>
       </section>
 
-      <div class="nav-actions">
+      <div class="actions">
         <button type="button" class="btn btn-secondary" id="prevBtn">前の項目へ</button>
+        <button type="button" class="btn btn-secondary" id="previewBtn">送信内容を確認</button>
+        <button type="button" class="btn btn-primary hidden" id="lineBtn">LINEで内容を送る</button>
+        <button type="button" class="btn btn-secondary hidden" id="copyBtn">内容をコピーする</button>
         <button type="button" class="btn btn-primary" id="nextBtn">次の項目へ</button>
-        <button type="submit" class="btn btn-primary hidden" id="submitBtn">送信内容を確認する</button>
       </div>
     </form>
-
-    <section class="card summary-card hidden" id="summarySection">
-      <h2>送信内容の確認</h2>
-      <p class="summary-lead">下記の内容をご確認ください。内容をLINEで送る場合は、専用ボタンからそのまま送信できます。</p>
-      <div id="summaryContent" class="summary-content"></div>
-      <div class="summary-actions">
-        <a class="btn btn-primary" id="lineShareBtn" href="#" target="_blank" rel="noopener noreferrer">LINEで内容を送る</a>
-        <button type="button" class="btn btn-secondary" id="copyBtn">内容をコピーする</button>
-        <button type="button" class="btn btn-secondary" id="editBtn">入力画面に戻る</button>
-      </div>
-      <p class="line-help">※「LINEで内容を送る」を押すと、LINEアプリまたはLINE共有画面が開きます。開かない場合は「内容をコピーする」でコピー後、LINEに貼り付けてお送りください。</p>
-      <div class="cta-box">
-        <p>まだご予約がお済みでない場合は、こちらからご連絡いただけます。</p>
-        <a class="btn btn-primary" href="https://lin.ee/e7d7Nmw" target="_blank" rel="noopener noreferrer">LINE予約へ進む</a>
-      </div>
-    </section>
   </main>
+
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
 
   <script src="script.js"></script>
 </body>
